@@ -1,0 +1,48 @@
+---
+title: R Markdown Homework Assignment
+author: "Mojtaba Maleki (TILQ7Q)"
+output: github_document
+lang: en
+---
+
+First, let's display some system information:
+
+```{python, echo=FALSE}
+import os, platform, socket
+print(f'"Machine type: {platform.machine()}')
+print(f'Node name: {platform.node()}')
+print(f'OS name: {platform.system()}')
+print(f'OS release: {platform.release()}')
+print(f'OS version: {platform.version()}')
+print(f'User name: {os.getlogin()}')
+print(f'Home directory: {os.path.expanduser("~")}')
+print(f'Current directory: {os.getcwd()}')
+print(f'PATH: {os.environ.get("PATH")}')
+```
+
+Let's create a word cloud of the complete Sherlock Holmes Canon that is available in plain text from [here](https://sherlock-holm.es/stories/plain-text/cano.txt).
+
+The word cloud can be generated with the [word_cloud](https://github.com/amueller/word_cloud) package as follows:
+
+```{python, wordcloud, fig.path=""}
+from wordcloud import WordCloud, STOPWORDS
+import urllib.request
+from PIL import Image
+import numpy as np
+
+text = urllib.request.urlopen('https://sherlock-holm.es/stories/plain-text/cano.txt').read().decode('utf-8')
+
+stopwords = set(STOPWORDS)
+stopwords.add("said")
+
+mask = np.array(Image.open('detectiveHat.png'))
+
+wordcloud = WordCloud(stopwords=stopwords, collocations=False, mask=mask, margin=0, background_color='white').generate(text)
+
+import matplotlib.pyplot as plt
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+```
+
+This document was generated on `r lubridate::stamp("January 1, 1975 at 00:00:00", locale = "C")(lubridate::now())`.
